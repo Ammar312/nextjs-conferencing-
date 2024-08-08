@@ -17,9 +17,6 @@ const MeetingSetup = ({
   //   const callStartAt = useCallStartsAt();
   //   const callEndedAt = useCallEndedAt();
   const call = useCall();
-  useEffect(() => {
-    console.log("call:", call); // Debug log for checking if call is defined
-  }, [call]);
 
   if (!call) {
     throw new Error("useStreamCall must be used within a StreamCall component");
