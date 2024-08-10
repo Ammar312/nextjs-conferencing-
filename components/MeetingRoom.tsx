@@ -6,7 +6,7 @@ import {
   PaginatedGridLayout,
   SpeakerLayout,
 } from "@stream-io/video-react-sdk";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LayoutList, Users } from "lucide-react";
+import EndCallButton from "./EndCallButton";
 
 type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
@@ -24,6 +25,8 @@ const MeetingRoom = () => {
   const [layout, setLayout] = useState<CallLayoutType>("speaker-left");
   const [showParticipants, setShowParticipants] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isPersonalRoom = !!searchParams.get("personal");
   const CallLayout = () => {
     switch (layout) {
       case "grid":
@@ -79,7 +82,7 @@ const MeetingRoom = () => {
             <Users size={20} className="text-white" />
           </div>
         </button>
-        {/* {!isPersonalRoom && <EndCallButton />} */}
+        {!isPersonalRoom && <EndCallButton />}
       </div>
     </section>
   );
