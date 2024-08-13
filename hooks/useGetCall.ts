@@ -13,8 +13,8 @@ export const useGetCall = () => {
       if (!client || !user) return;
       setIsLoading(true);
       try {
-        const {} = await client.queryCalls({
-          sort: [{ field: "start_at", direction: -1 }],
+        const { calls } = await client.queryCalls({
+          sort: [{ field: "starts_at", direction: -1 }],
           filter_conditions: {
             starts_at: { $exists: true },
             $or: [

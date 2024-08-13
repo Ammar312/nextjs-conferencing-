@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "./Loader";
 import MeetingCard from "./MeetingCard";
+import { useToast } from "./ui/use-toast";
 
 const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
   const router = useRouter();
+  const { toast } = useToast();
   const { endedCalls, upcomingCalls, callRecordings, isLoading } = useGetCall();
   const [recordings, setRecordings] = useState<CallRecording[]>([]);
   const getCalls = () => {
@@ -36,13 +38,17 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
   };
   useEffect(() => {
     const fetchRecordings = async () => {
-      const callData = await Promise.all(
-        callRecordings?.map((meeting) => meeting.queryRecordings()) ?? []
-      );
-      const recordings = callData
-        .filter((call) => call.recordings.length > 0)
-        .flatMap((call) => call.recordings);
-      setRecordings(recordings);
+      try {
+        const callData = await Promise.all(
+          callRecordings?.map((meeting) => meeting.queryRecordings()) ?? []
+        );
+        const recordings = callData
+          .filter((call) => call.recordings.length > 0)
+          .flatMap((call) => call.recordings);
+        setRecordings(recordings);
+      } catch (error) {
+        toast({ title: "Try Again Later" });
+      }
     };
     if (type === "recordings") {
       fetchRecordings();
@@ -50,6 +56,7 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
   }, [type, callRecordings]);
   if (isLoading) return <Loader />;
   const calls = getCalls();
+  console.log("Calls: ", calls);
   const noCallsMessage = getNoCallsMessage();
   return (
     <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
